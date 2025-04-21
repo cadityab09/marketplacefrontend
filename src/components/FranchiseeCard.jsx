@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const FranchiseeCard = ({ franchisee }) => {
   return (
-    <div className="max-w-[100%] p-4 rounded-[10px] overflow-hidden shadow-lg transition-transform transform hover:scale-105 bg-white bg-gradient-to-r from-blue-100 via-blue-150 to-blue-100 border border-blue-200">
+    <div className="max-w-[90%] p-4 rounded-[10px] overflow-hidden shadow-lg transition-transform transform hover:scale-105 bg-white bg-gradient-to-r from-blue-100 via-blue-150 to-blue-100 border border-blue-200">
       <div className="w-full bg-white">
       <img className="w-full h-[200px] object-contain object-center" src={franchisee.logo} alt={`${franchisee.name} logo`} />
       </div>
@@ -15,7 +15,7 @@ const FranchiseeCard = ({ franchisee }) => {
       </div>
       <div className="px-6 pt-4 pb-2">
       <Link
-          to={`/franchisee/${franchisee.id}`}
+          to={`/franchisees/${franchisee.id}`}
           state={{ franchisee }}
           className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
