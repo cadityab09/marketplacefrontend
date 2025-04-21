@@ -8,29 +8,20 @@ import Franchisor from './pages/Franchisor';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import './App.css';
+import FranchiseeDetail from './components/FrachiseeDetail';
+import MainLayout from './layouts/MainLayout';
+import { Provider } from 'react-redux';
+import store from './store/store';
 
 function App() {
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen">
-        <div className='fixed top-0 left-0 right-0 z-10'>
-        <Header />
-        </div>
-        <div className='absolute top-[96px] left-0 right-0 '>
-        {/* <Navbar /> */}
-        <main className="flex-grow overflow-y-auto">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/franchisees" element={<Franchisees />} />
-            <Route path="/franchisor" element={<Franchisor />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </main>
-        <Footer />
-        </div>
-      </div>
-    </Router>
+    <>
+      <Router>
+        <Provider store={store}>
+          <MainLayout />
+        </Provider>
+      </Router>
+    </>
   );
 }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const FranchiseeCard = ({ franchisee }) => {
   return (
@@ -13,9 +14,13 @@ const FranchiseeCard = ({ franchisee }) => {
         </p>
       </div>
       <div className="px-6 pt-4 pb-2">
-        <a href={franchisee.website} className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <Link
+          to={`/franchisee/${franchisee.id}`}
+          state={{ franchisee }}
+          className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
           More Details
-        </a>
+        </Link>
       </div>
     </div>
   );
