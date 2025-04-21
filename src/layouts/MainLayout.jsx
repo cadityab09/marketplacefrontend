@@ -14,6 +14,8 @@ import Login from '../pages/Login';
 import { loginStatus, logoutStatus } from '../features/userSlice';
 import FranchisorView from '../components/franchisor/FranchisorView';
 import FranchiseeView from '../components/franchisee/FranchiseeView';
+import FranchisorDashboard from "../pages/FranchisorDashboard";
+import FranchiseeList from '../pages/FranchiseeList';
 
 function MainLayout() {
     const [identity, setIdentity] = useState("-1")
@@ -49,6 +51,8 @@ function MainLayout() {
                             <Route path="/login" element={<Login />} />
                             <Route path="/franchisor/*" element={<FranchisorView/>} /> 
                             <Route path="/franchisee/*" element={<FranchiseeView/>} /> 
+                            <Route path="/dashboard" element={<FranchisorDashboard />} />
+                            <Route path="/franchiseeslist" element={<FranchiseeList />} />
                         </Routes>
                     </main>
                     <Footer />

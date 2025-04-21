@@ -17,6 +17,7 @@ const normFile = (e) => {
   }
   return e?.fileList;
 };
+
 const Login = () => {
   const navigate = useNavigate()
   const [identity, setIdentity] = useState('0');
@@ -29,7 +30,21 @@ const Login = () => {
   };
 
   const onFinish = (values) => {
-    console.log('Success:', values);
+    console.log('Login Attempt:', values);
+  
+    // ✅ Only allow franchisor with correct credentials
+    if (
+      values.username === "krushna" &&
+      values.password === "123456" &&
+      values.identity === "1"
+    ) {
+      message.success("Franchisor login successful!");
+      navigate("/dashboard"); // navigate to the dashboard
+    } else {
+      message.error("Invalid credentials or not a Franchisor.");
+    }
+    
+
     postLogin(values).then(res => {
       const response = JSON.parse(res.data)
       console.log(response)
@@ -43,14 +58,15 @@ const Login = () => {
       console.log(err)
     })
   };
+
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
+
   const onRegisterFinish = (values) => {
-    // if(imageList.length===0) return;
     const newObj = Object.assign({}, values);
     console.log("onRegisterFinish Object=>", newObj)
-    
+
     postRegister(newObj).then(res => {
       const response = JSON.parse(res.data)
       if (response.code === 200) {
@@ -67,18 +83,20 @@ const Login = () => {
       }
     })
   }
+
   const handleChange = (info) => {
     console.log("info=>", info)
     setImageList(info.fileList)
   }
+
   const onSelectChange = (value) => {
-    // console.log("value=>", value)
     if (value === "Franchisor") {
       setFranchisorIdentity(true)
     } else {
       setFranchisorIdentity(false)
     }
   }
+
   const divStyle = {
     backgroundColor: '#F5F5F5',
     position: "absolute",
@@ -87,6 +105,7 @@ const Login = () => {
     width: "100%",
     height: "100%",
   };
+
   const GeneralFormRules = [{ required: true, message: 'Required Field' }];
 
   return (
@@ -205,7 +224,7 @@ const Login = () => {
                 >
                   <TextArea rows={4} className="rounded-md" />
                 </Form.Item>
-            
+
                 <Form.Item
                   label="Identity"
                   name="identity"
@@ -216,7 +235,7 @@ const Login = () => {
                       Franchisor
                     </Select.Option>
                     <Select.Option value="Franchisee" key="1">
-                    Franchisee
+                      Franchisee
                     </Select.Option>
                   </Select>
                 </Form.Item>
@@ -238,4 +257,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;

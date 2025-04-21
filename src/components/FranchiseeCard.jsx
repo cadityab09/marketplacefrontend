@@ -15,7 +15,7 @@ const FranchiseeCard = ({ franchisee }) => {
       </div>
       <div className="px-6 pt-4 pb-2">
       <Link
-          to={`/franchisee/${franchisee.id}`}
+          to={`/franchisees/${franchisee.id}`}
           state={{ franchisee }}
           className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
