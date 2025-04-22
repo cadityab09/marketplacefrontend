@@ -16,6 +16,10 @@ import FranchisorView from '../components/franchisor/FranchisorView';
 import FranchiseeView from '../components/franchisee/FranchiseeView';
 import FranchisorDashboard from "../pages/FranchisorDashboard";
 import FranchiseeList from '../pages/FranchiseeList';
+import Applications from "../pages/Applications";
+import PerformanceReports from "../pages/PerformanceReports";
+import MarketingMaterials from "../pages/MarketingMaterials";
+
 
 function MainLayout() {
     const [identity, setIdentity] = useState("-1")
@@ -53,6 +57,9 @@ function MainLayout() {
                             <Route path="/franchisee/*" element={<FranchiseeView/>} /> 
                             <Route path="/dashboard" element={<FranchisorDashboard />} />
                             <Route path="/franchiseeslist" element={<FranchiseeList />} />
+                            <Route path="/applications" element={<Applications />} />
+                            <Route path="/reports" element={<PerformanceReports />} />
+                            <Route path="/materials" element={<MarketingMaterials />} />
                         </Routes>
                     </main>
                     <Footer />
