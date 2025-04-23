@@ -4,7 +4,7 @@ import { Button, Checkbox, Form, Input, Radio, Col, Row } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCartOutlined, UploadOutlined } from "@ant-design/icons";
 import httpService from "../configs/HttpService";
-import { postLogin, postRegister } from "../configs/services";
+import { postAccessToken, postLogin, postRegister } from "../configs/services";
 import { loginStatus, logoutStatus, increment, setCount } from "../features/userSlice";
 import { useSelector, useDispatch } from 'react-redux'
 import { baseUrl } from "../configs/HttpService";
@@ -23,7 +23,9 @@ const Login = () => {
   const [identity, setIdentity] = useState('0');
   const [franchisorIdentity, setFranchisorIdentity] = useState(true)
   const [registerForm] = Form.useForm();
-  const [activeTab, setActiveTab] = useState("1"); // State to control active tab
+  const [activeTab, setActiveTab] = useState("1"); 
+  const dispatch = useDispatch()
+
 
   const handleIdentityChange = (e) => {
     setIdentity(e.target.value);
@@ -31,24 +33,32 @@ const Login = () => {
 
   const onFinish = (values) => {
     console.log('Login Attempt:', values);
-  
+
     // ✅ Only allow franchisor with correct credentials
-    if (
-      values.username === "krushna" &&
-      values.password === "123456" &&
-      values.identity === "1"
-    ) {
-      message.success("Franchisor login successful!");
-      navigate("/dashboard"); // navigate to the dashboard
-    } else {
-      message.error("Invalid credentials or not a Franchisor.");
-    }
-    
+    // if (
+    //   values.username === "krushna" &&
+    //   values.password === "123456" &&
+    //   values.identity === "1"
+    // ) {
+    //   message.success("Franchisor login successful!");
+    //   navigate("/dashboard"); // navigate to the dashboard
+    // } else {
+    //   message.error("Invalid credentials or not a Franchisor.");
+    // }
+
 
     postLogin(values).then(res => {
       const response = JSON.parse(res.data)
       console.log(response)
-      if (response.code === 200) {
+      if (response) {
+        postAccessToken().then(res => {
+          const response = res;
+          console.log("JTW response=>", response)
+          dispatch(loginStatus(response))
+        }).catch(err => {
+          console.log("Err:", err)
+          dispatch(logoutStatus())
+        })
         navigate("/")
       } else {
         message.error("Wrong username or password!")
@@ -227,14 +237,14 @@ const Login = () => {
 
                 <Form.Item
                   label="Identity"
-                  name="identity"
+                  name="userRole"
                   rules={GeneralFormRules}
                 >
                   <Select onChange={onSelectChange} className="rounded-md">
-                    <Select.Option value="Franchisor" key="0">
+                    <Select.Option value="FRANCHISOR" key="0">
                       Franchisor
                     </Select.Option>
-                    <Select.Option value="Franchisee" key="1">
+                    <Select.Option value="FRANCHISEE" key="1">
                       Franchisee
                     </Select.Option>
                   </Select>

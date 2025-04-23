@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import applogo from '../assets/AppLogo2.png';
 import { useNavigate } from 'react-router-dom';
+import { logoutStatus } from '../features/userSlice';
+import { useDispatch } from 'react-redux';
+import LocalStorageUtil from '../store/localStorageUtil';
 
 const Header = ({ identity }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const navRef = useRef(null);
   console.log("identity", identity);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const list0 = [
     { name: 'Home', path: '/franchisor', icon: '🏠' },
@@ -30,7 +34,7 @@ const Header = ({ identity }) => {
     { name: 'Logout', path: '/logout', icon: '🚪' },
   ];
 
-  const navItems = identity === 0 ? list1 : list0;
+  const navItems = identity === '0' ? list0 : list1;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -52,6 +56,18 @@ const Header = ({ identity }) => {
       document.body.style.overflow = 'auto';
     }
   }, [isNavOpen]);
+
+  const handleNavigation = (path) => {
+    if (path === '/logout') {
+      // Handle logout logic here
+      console.log('Logging out...');
+      dispatch(logoutStatus());
+      LocalStorageUtil.clearAll();
+      // navigate('/');
+    } else {
+      navigate(path);
+    }
+  }
 
   return (
     <header className="bg-gradient-to-r from-blue-200 via-blue-100 to-blue-200 text-white px-4 py-2 flex items-center shadow-md">
@@ -105,7 +121,7 @@ const Header = ({ identity }) => {
                 className="flex items-center space-x-2 border-b border-gray-200 hover:bg-blue-100 hover:text-blue-600 transition-colors duration-200 px-2"
               >
                 <span className='text-2xl p-2'>{item.icon}</span>
-                <a onClick={() => navigate(item.path)} href='' className="text-gray-700 hover:text-blue-500 text-lg font-semibold">
+                <a onClick={() => handleNavigation(item.path)} href='' className="text-gray-700 hover:text-blue-500 text-lg font-semibold">
                   {item.name}
                 </a>
               </li>
