@@ -19,6 +19,7 @@ import FranchiseeList from '../pages/FranchiseeList';
 import Applications from "../pages/Applications";
 import PerformanceReports from "../pages/PerformanceReports";
 import MarketingMaterials from "../pages/MarketingMaterials";
+import FranchiseeDashboard from "../pages/FranchiseeDashboard";
 
 
 function MainLayout() {
@@ -55,11 +56,12 @@ function MainLayout() {
                             <Route path="/login" element={<Login />} />
                             <Route path="/franchisor/*" element={<FranchisorView/>} /> 
                             <Route path="/franchisee/*" element={<FranchiseeView/>} /> 
-                            <Route path="/dashboard" element={<FranchisorDashboard />} />
+                            <Route path="/Franchisordashboard" element={<FranchisorDashboard />} />
                             <Route path="/franchiseeslist" element={<FranchiseeList />} />
                             <Route path="/applications" element={<Applications />} />
                             <Route path="/reports" element={<PerformanceReports />} />
                             <Route path="/materials" element={<MarketingMaterials />} />
+                            <Route path="/FranchiseeDashboard" element={<FranchiseeDashboard />} />
                         </Routes>
                     </main>
                     <Footer />
