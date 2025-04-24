@@ -1,26 +1,36 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const FranchiseeCard = ({ franchisee }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/franchisees/${franchisee.id}`, {
+      state: { franchisee },
+    });
+  };
+
   return (
-    <div className="max-w-[100%] p-4 rounded-[10px] overflow-hidden shadow-lg transition-transform transform hover:scale-105 bg-white bg-gradient-to-r from-blue-100 via-blue-150 to-blue-100 border border-blue-200">
-      <div className="w-full bg-white">
-      <img className="w-full h-[200px] object-contain object-center" src={franchisee.logo} alt={`${franchisee.name} logo`} />
+    <div
+      className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition duration-300 flex flex-col justify-between cursor-pointer"
+    >
+      <div onClick={handleClick}>
+        <img
+          src={franchisee.logo}
+          alt={franchisee.name}
+          className="w-24 h-24 mx-auto mb-4 object-contain"
+        />
+        <h3 className="text-xl font-semibold text-center mb-2">{franchisee.name}</h3>
+        <p className="text-gray-600 text-sm text-center">{franchisee.description}</p>
       </div>
-      <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{franchisee.name}</div>
-        <p className="text-gray-700 text-base">
-          {franchisee.description}
-        </p>
-      </div>
-      <div className="px-6 pt-4 pb-2">
-      <Link
-          to={`/franchisees/${franchisee.id}`}
-          state={{ franchisee }}
-          className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+
+      <div className="mt-4 flex justify-center">
+        <button
+          onClick={handleClick}
+          className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-medium py-2 px-6 rounded-full transition"
         >
-          More Details
-        </Link>
+          View Details
+        </button>
       </div>
     </div>
   );

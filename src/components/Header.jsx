@@ -15,12 +15,12 @@ const Header = ({ identity }) => {
   const list0 = [
     { name: 'Home', path: '/franchisor', icon: '🏠' },
     { name: 'Add Franchisees', path: '/franchisor/add-franchisees', icon: '➕' },
-    { name: 'My Brands', path: '/franchisor/my-brands', icon: '➕' },
+    // { name: 'My Brands', path: '/franchisor/my-brands', icon: '➕' },
     { name: 'View Franchisees', path: '/franchisor/view-franchisees', icon: '👀' },
-    { name: 'Manage Franchisees', path: '/franchisor/manage-franchisees', icon: '🛠️' },
+    // { name: 'Manage Franchisees', path: '/franchisor/manage-franchisees', icon: '🛠️' },
     { name: 'My Profile', path: '/franchisor/profile', icon: '👤' },
-    { name: 'View Reports', path: '/franchisor/reports', icon: '📊' },
-    { name: 'Support', path: '/franchisor/support', icon: '🛎️' },
+    // { name: 'View Reports', path: '/franchisor/reports', icon: '📊' },
+    // { name: 'Support', path: '/franchisor/support', icon: '🛎️' },
     { name: 'Logout', path: '/logout', icon: '🚪' },
   ];
 
