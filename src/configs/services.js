@@ -28,3 +28,7 @@ export const postAccessToken = () => {
 };
 
 export const postRegister = (data) => httpService.post('/users/register', data)
+
+export const postBrands = (data) => httpService.post('/api/franchisor-brands', data)
+
+export const putBrands = (id, data) => httpService.post(`/api/franchisor-brands/${id}`, data)

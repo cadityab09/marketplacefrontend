@@ -4,7 +4,7 @@ import Constant from "../store/constant";
 const baseUrl = "http://localhost:8084";
 const httpService = axios.create({
     baseURL: baseUrl,
-    timeout: 4000,
+    timeout: 40000,
     // headers: {},
     withCredentials: true,
     transformRequest: [function (data, headers) {
@@ -15,8 +15,48 @@ const httpService = axios.create({
         return data;
     }],
 });
-httpService.defaults.headers['Content-Type'] = 'application/json; charset=UTF-8';
+httpService.defaults.headers['Content-Type'] = 'application/json; charset=UTF-8; multipart/form-data';
 httpService.defaults.headers['Access-Control-Allow-Origin'] = '*';
+
+httpService.interceptors.request.use(
+    (config) => {
+        // Retrieve the JWT token from local storage
+        const jwtToken = LocalStorageUtil.getData(Constant.JWT_TOKEN_KEY);
+        if (jwtToken) {
+            // Add the Authorization header with the Bearer token
+            config.headers['Authorization'] = `Bearer ${jwtToken}`;
+        }
+        return config;
+    },
+    (error) => {
+        // Handle request errors
+        console.error("Error in request interceptor:", error);
+        return Promise.reject(error);
+    }
+);
+
+httpService.interceptors.request.use(
+    (config) => {
+        const jwtToken = LocalStorageUtil.getData(Constant.JWT_TOKEN_KEY);
+        if (jwtToken) {
+            config.headers['Authorization'] = `Bearer ${jwtToken}`;
+        }
+        return config;
+    },
+    (error) => {
+        console.error("Error in request interceptor:", error);
+        return Promise.reject(error);
+    }
+);
+
+export const getHeaders = () => {
+    const jwtToken = LocalStorageUtil.getData(Constant.JWT_TOKEN_KEY);
+    return {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+    };
+};
+
 httpService.interceptors.response.use(
     (response) => {
         // Extract the authorization token from headers if available
@@ -56,3 +96,6 @@ httpService.interceptors.response.use(
 );
 export default httpService
 export {baseUrl}
+export const getUrl = () =>{
+    return baseUrl;
+}

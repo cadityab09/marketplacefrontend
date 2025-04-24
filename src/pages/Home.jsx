@@ -25,7 +25,7 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-to-r from-blue-400 to-purple-300 p-8">
       <h1 className="text-4xl font-bold text-white text-center mb-8">Welcome to the Marketplace</h1>
       <p className="text-lg text-white text-center mb-12">Discover amazing franchise opportunities!</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 ">
         {featuredFranchisees.map(franchisee => (
           <FranchiseeCard key={franchisee.id} franchisee={franchisee} />
         ))}

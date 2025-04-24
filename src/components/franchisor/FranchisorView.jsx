@@ -7,6 +7,7 @@ import ManageFranchisees from './ManageFranchisees'
 import MyProfile from './MyProfile'
 import ViewReports from './ViewReports'
 import Support from './Support'
+import FranchisorBrands from './FranchisorBrands'
 
 function FranchisorView() {
     return (
@@ -16,6 +17,7 @@ function FranchisorView() {
                 <Routes>
                     <Route path="/" element={<FranchisorHome />} />
                     <Route path="/add-franchisees" element={<AddFranchisees />} />
+                    <Route path="/my-brands" element={<FranchisorBrands />} />
                     <Route path="/view-franchisees" element={<ViewFranchisees />} />
                     <Route path="/manage-franchisees" element={<ManageFranchisees />} />
                     <Route path="/profile" element={<MyProfile />} />
