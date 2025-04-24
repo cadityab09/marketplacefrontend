@@ -1,6 +1,6 @@
 import React from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import McDonals from '../assets/mc.png'; // Add other logos too
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import McDonals from '../assets/mc.png'; // Replace with actual path
 
 const allFranchisees = [
   {
@@ -39,59 +39,68 @@ const allFranchisees = [
     email: 'help@subway.com',
     website: 'https://subway.com',
   },
-  // Add more if needed
 ];
 
 const FranchiseeDetail = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const franchiseeFromState = location.state?.franchisee;
-  const franchisee =
-    franchiseeFromState || allFranchisees.find((f) => f.id === parseInt(id));
+  const franchisee = franchiseeFromState || allFranchisees.find(f => f.id === parseInt(id));
 
   if (!franchisee) {
     return <div className="text-center mt-10 text-red-500">Franchisee not found!</div>;
   }
 
   return (
-    <div className="max-w-7xl mx-auto my-10 bg-white shadow-lg rounded-lg overflow-hidden">
-      <div className="bg-blue-500 p-6 text-white">
-        <h1 className="text-2xl font-bold">{franchisee.name}</h1>
-      </div>
-      <div className="p-6">
+    <div className="max-w-4xl mx-auto my-10 bg-white shadow-md rounded-xl overflow-hidden p-6">
+      <div className="text-center">
         <img
           src={franchisee.logo}
           alt={`${franchisee.name} logo`}
-          className="w-32 h-32 rounded-full shadow-2xl mx-auto"
+          className="w-32 h-32 mx-auto rounded-full shadow-lg"
         />
-        <div className="mt-6 text-center">
-          <h2 className="text-xl font-semibold text-gray-800">{franchisee.name}</h2>
-          {/* <p className="text-gray-600">Qualification: {franchisee.qualification}</p> */}
+        <h1 className="text-3xl font-bold mt-4">{franchisee.name}</h1>
+        <p className="text-gray-500 mt-2 italic">{franchisee.qualification}</p>
+      </div>
+
+      <div className="mt-8 space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold">📍 Location</h3>
+          <p>{franchisee.location}</p>
         </div>
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold text-gray-800">Main Office Location</h3>
-          <p className="text-gray-600">{franchisee.location}</p>
-        </div>
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold text-gray-800">Additional Details</h3>
-          <ul className="list-disc list-inside text-gray-600">
+
+        <div>
+          <h3 className="text-lg font-semibold">📊 Business Info</h3>
+          <ul className="list-disc list-inside text-gray-700">
             <li>Years in Business: {franchisee.yearsInBusiness}</li>
             <li>Number of Employees: {franchisee.employees}</li>
             <li>Specialization: {franchisee.specialization}</li>
-            <li>Contact Email: {franchisee.email}</li>
           </ul>
         </div>
-        <div className="mt-6 text-center">
-          <a
-            href={franchisee.website}
-            className="inline-block px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Visit Website
-          </a>
+
+        <div>
+          <h3 className="text-lg font-semibold">📧 Contact</h3>
+          <p>Email: <a href={`mailto:${franchisee.email}`} className="text-blue-500 underline">{franchisee.email}</a></p>
         </div>
+      </div>
+
+      <div className="mt-8 flex justify-center gap-4">
+        <a
+          href={franchisee.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md"
+        >
+          Visit Website
+        </a>
+        <button
+          onClick={() => navigate('/')}
+          className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-md"
+        >
+          Go to Home
+        </button>
       </div>
     </div>
   );

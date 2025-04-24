@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Card, message, notification, Select, Space, Tabs, Upload } from 'antd';
-import { Button, Checkbox, Form, Input, Radio, Col, Row } from 'antd';
+import React, { useState } from "react";
+import { Card, message, Tabs } from 'antd';
+import { Button, Form, Input, Radio, Select } from 'antd';
 import { useNavigate } from "react-router-dom";
 import { postAccessToken, postLogin, postRegister } from "../configs/services";
-import { baseUrl } from "../configs/HttpService";
 import { useDispatch } from "react-redux";
 import { loginStatus, logoutStatus } from "../features/userSlice";
 
@@ -16,8 +15,7 @@ const Login = () => {
   const [franchisorIdentity, setFranchisorIdentity] = useState(true);
   const [registerForm] = Form.useForm();
   const [activeTab, setActiveTab] = useState("1");
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
 
   const handleIdentityChange = (e) => {
     setIdentity(e.target.value);
@@ -26,56 +24,38 @@ const Login = () => {
   const onFinish = (values) => {
     console.log('Login Attempt:', values);
 
-    // ✅ Hardcoded Franchisor check
-    // if (
-    //   values.username === "krushna" &&
-    //   values.password === "123456" &&
-    //   values.identity === "1"
-    // ) {
-    //   message.success("Franchisor login successful!");
-    //   navigate("/Franchisordashboard");
-    //   return;
-    // }
+    postLogin(values)
+      .then(res => {
+        const response = JSON.parse(res.data);
+        if (response) {
+          postAccessToken()
+            .then(res => {
+              const accessTokenData = res;
+              console.log("JWT response =>", accessTokenData);
+              dispatch(loginStatus(accessTokenData));
 
-    // ✅ Hardcoded Franchisee check
-    // if (
-    //   values.username === "aditya" &&
-    //   values.password === "123456" &&
-    //   values.identity === "0"
-    // ) {
-    //   message.success("Franchisee login successful!");
-    //   navigate("/franchiseedashboard");
-    //   return;
-    // }
-
-    // ❌ Fallback error if credentials don't match
-    message.error("Invalid credentials or role.");
-
-    // Optional: Call backend login
-    postLogin(values).then(res => {
-      const response = JSON.parse(res.data)
-      console.log(response)
-      if (response) {
-        postAccessToken().then(res => {
-          const response = res;
-          console.log("JTW response=>", response)
-          dispatch(loginStatus(response))
-          if (response.identity === "0") {
-            navigate("/FranchisorDashboard")
-          } else if (response.identity === "1") {
-            navigate("/Franchiseedashboard")
-          }
-        }).catch(err => {
-          console.log("Err:", err)
-          dispatch(logoutStatus())
-        })
-        navigate("/")
-      } else {
-        message.error("Wrong username or password!");
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
+              // Show message and navigate after a short delay
+              if (accessTokenData.identity === "0") {
+                message.success("Franchisor login successful!");
+                setTimeout(() => navigate("/FranchisorDashboard"), 500);
+              } else if (accessTokenData.identity === "1") {
+                message.success("Franchisee login successful!");
+                setTimeout(() => navigate("/Franchiseedashboard"), 500);
+              }
+            })
+            .catch(err => {
+              console.error("JWT Error:", err);
+              dispatch(logoutStatus());
+              message.error("Login failed. Please try again.");
+            });
+        } else {
+          message.error("Wrong username or password!");
+        }
+      })
+      .catch(err => {
+        console.error("Login Error:", err);
+        message.error("Server error. Please check your credentials.");
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -92,7 +72,7 @@ const Login = () => {
         registerForm.resetFields();
         setActiveTab("1");
       } else if (response.code === 500) {
-        if (response.object !== undefined && response.object !== null) {
+        if (response.object) {
           message.error(response.object);
         } else {
           message.error("Registration failed!");
@@ -114,7 +94,7 @@ const Login = () => {
           <Tabs defaultActiveKey="1" activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
             <TabPane tab="Login" key="1">
               <Form
-                name="basic"
+                name="loginForm"
                 layout="vertical"
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
@@ -137,7 +117,7 @@ const Login = () => {
                   <Input.Password className="rounded-md" />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   label="Identity"
                   name="identity"
                   rules={[{ required: true, message: "Please select your identity!" }]}
@@ -146,7 +126,7 @@ const Login = () => {
                     <Radio value="0">Franchisee</Radio>
                     <Radio value="1">Franchisor</Radio>
                   </Radio.Group>
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item>
                   <div className="flex justify-between">
