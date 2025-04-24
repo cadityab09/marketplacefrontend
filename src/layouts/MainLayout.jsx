@@ -9,7 +9,7 @@ import Franchisor from '../pages/Franchisor';
 import Register from '../pages/Register';
 import FranchiseeDetail from '../components/FrachiseeDetail';
 import { postAccessToken } from '../configs/services';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Login from '../pages/Login';
 import { loginStatus, logoutStatus } from '../features/userSlice';
 import FranchisorView from '../components/franchisor/FranchisorView';
@@ -23,21 +23,26 @@ import FranchiseeDashboard from "../pages/FranchiseeDashboard";
 
 
 function MainLayout() {
-    const [identity, setIdentity] = useState("-1")
     const navigate = useNavigate();
     const dispatch = useDispatch()
 
+    const identity = useSelector((state) => state.user.info.identity);
+
     useEffect(() => {
-        postAccessToken().then(res=>{
-            const response = JSON.parse(res.data)
-            console.log("JTW response=>", response)
-            setIdentity(response.object.identity)
-            dispatch(loginStatus(response.object))
-        }).catch(err=>{
-            console.log("Err:", err)
-            dispatch(logoutStatus())
-        })
-    }, []);
+        // postAccessToken().then(res=>{
+        //     const response = res;
+        //     console.log("JTW response=>", response)
+        //     dispatch(loginStatus(response))
+        //     if(response.identity === "0"){
+        //         navigate("/FranchisorDashboard")
+        //     }else if(response.identity === "1"){
+        //         navigate("/Franchiseedashboard")
+        //     }
+        // }).catch(err=>{
+        //     console.log("Err:", err)
+        //     dispatch(logoutStatus())
+        // })
+    }, [dispatch]);
 
     return (
             <div className="flex flex-col min-h-screen">

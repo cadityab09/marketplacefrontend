@@ -35,10 +35,10 @@ export const userSlice = createSlice({
             LocalStorageUtil.removeData(Constant.JWT_TOKEN_KEY)
         },
         loginStatus: (state, action) => {
-            state.info.username = action.payload.username;
+            state.info.username = action.payload.userName;
             state.info.id = action.payload.userId;
             state.info.isLogin = true;
-            state.info.avatarLink = action.payload.avatar;
+            // state.info.avatarLink = action.payload.avatar;
             state.info.identity = action.payload.identity
         },
         updateAvatar: (state, action) => {

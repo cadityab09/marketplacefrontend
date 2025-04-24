@@ -1,5 +1,6 @@
 class LocalStorageUtil {
     static setData(key, value) {
+        console.log("setData", key, value);
         localStorage.setItem(key, JSON.stringify(value));
     }
 
@@ -21,6 +22,14 @@ class LocalStorageUtil {
 
     static removeData(key) {
         localStorage.removeItem(key);
+    }
+
+    static getAllKeys() {
+        return Object.keys(localStorage);
+    }
+    static clearAll() {
+        console.log("Clearing all local storage data");
+        localStorage.clear();
     }
 }
 
