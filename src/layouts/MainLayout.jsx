@@ -34,9 +34,9 @@ function MainLayout() {
             console.log("JTW response=>", response)
             dispatch(loginStatus(response))
             // if(response.identity === "0"){
-            //     navigate("/FranchisorDashboard")
+            //     navigate("/*")
             // }else if(response.identity === "1"){
-            //     navigate("/Franchiseedashboard")
+            //     navigate("/*")
             // }
         }).catch(err=>{
             console.log("Err:", err)
