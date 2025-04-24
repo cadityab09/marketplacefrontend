@@ -36,6 +36,7 @@ const Home = () => {
           <FranchiseeCard key={franchisee.id} franchisee={franchisee} />
         ))}
       </div>
+      
     </div>
   );
 };

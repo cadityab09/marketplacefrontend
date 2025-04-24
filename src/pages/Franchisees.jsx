@@ -31,6 +31,7 @@ const Franchisees = () => {
           />
         ))}
       </div>
+      
     </div>
   );
 };
