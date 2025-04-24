@@ -8,6 +8,9 @@ import MyProfile from './MyProfile'
 import ViewReports from './ViewReports'
 import Support from './Support'
 import FranchisorBrands from './FranchisorBrands'
+import FranchisorDashboard from '../../pages/FranchisorDashboard'
+import Application from '../../pages/Applications'
+import FranchiseeList from '../../pages/FranchiseeList'
 
 function FranchisorView() {
     return (
@@ -16,9 +19,10 @@ function FranchisorView() {
             <div className="franchisor-view-routes">
                 <Routes>
                     <Route path="/" element={<FranchisorHome />} />
-                    <Route path="/add-franchisees" element={<AddFranchisees />} />
+                    <Route path="/dashboard" element={<FranchisorDashboard />} />
+                    <Route path="/add-franchisees" element={<Application />} />
                     <Route path="/my-brands" element={<FranchisorBrands />} />
-                    <Route path="/view-franchisees" element={<ViewFranchisees />} />
+                    <Route path="/view-franchisees" element={<FranchiseeList />} />
                     <Route path="/manage-franchisees" element={<ManageFranchisees />} />
                     <Route path="/profile" element={<MyProfile />} />
                     <Route path="/reports" element={<ViewReports />} />

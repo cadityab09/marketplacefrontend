@@ -14,6 +14,8 @@ import {
   InputNumber,
   Modal,
   Popconfirm,
+  message,
+  Select,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -22,18 +24,16 @@ import {
   LogoutOutlined,
   AppstoreAddOutlined,
 } from '@ant-design/icons';
+import axios from 'axios';
+import LocalStorageUtil from '../store/localStorageUtil';
+import { useDispatch } from 'react-redux';
+import { logoutStatus } from '../features/userSlice';
 
 const { Sider, Content } = Layout;
 
 const FranchiseeDashboard = () => {
   const navigate = useNavigate();
-  const [inventory, setInventory] = useState([
-    { key: 1, item: 'Bread Loaf', quantity: 50 },
-    { key: 2, item: 'Tomatoes', quantity: 0 },
-    { key: 3, item: 'Cheese Slices', quantity: 20 },
-    { key: 4, item: 'Lettuce', quantity: 5 },
-    { key: 5, item: 'Chicken Breast', quantity: 15 },
-  ]);
+  const [inventory, setInventory] = useState([]);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -41,57 +41,80 @@ const FranchiseeDashboard = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState('dashboard');
   const [selectedOrderItem, setSelectedOrderItem] = useState(null);
+  const dispatch = useDispatch();
+
+  const logoutFunction = () => {
+    dispatch(logoutStatus());
+      LocalStorageUtil.clearAll();
+      navigate('/');
+  }
+  const fetchInventory = async () => {
+    try {
+      const response = await axios.get('http://localhost:8084/api/inventory');
+      const updated = updateInventoryStatus(response.data).map((item) => ({
+        ...item,
+        key: item.id, // Use `id` from the backend as the `key`
+      }));
+      console.log('Fetched inventory:', updated);
+      setInventory(updated);
+    } catch (error) {
+      message.error('Failed to load inventory data.');
+    }
+  };
 
   const updateInventoryStatus = (list) =>
     list.map((item) => {
-      const status = item.quantity === 0 ? 'Out of Stock' : 'Available';
+      const status = item.quantity === 0 ? 'UNAVAILABLE' : 'AVAILABLE';
       return { ...item, status };
     });
 
   useEffect(() => {
-    const updated = updateInventoryStatus(inventory);
-    setInventory(updated);
+    fetchInventory();
   }, []);
 
-  const handleAddNewItem = (values) => {
-    const { item, quantity } = values;
-    const exists = inventory.find((i) => i.item.toLowerCase() === item.toLowerCase());
-    if (exists) return;
-
-    const newItem = {
-      key: inventory.length + 1,
-      item,
-      quantity,
-    };
-
-    const updated = updateInventoryStatus([...inventory, newItem]);
-    setInventory(updated);
-    setIsAddModalVisible(false);
-    form.resetFields();
+  const handleAddNewItem = async (values) => {
+    console.log('Adding new item:', values);
+    try {
+      await axios.post('http://localhost:8084/api/inventory', values);
+      message.success('Item added successfully.');
+      fetchInventory();
+      setIsAddModalVisible(false);
+      form.resetFields();
+    } catch (error) {
+      message.error('Failed to add item.');
+    }
   };
 
-  const handleEditItem = (values) => {
-    const { quantity } = values;
+  const handleEditItem = async (values) => {
     if (!selectedItem) return;
-
-    const updatedInventory = inventory.map((i) =>
-      i.key === selectedItem.key
-        ? {
-            ...i,
-            quantity: i.quantity + quantity,
-          }
-        : i
-    );
-
-    const updated = updateInventoryStatus(updatedInventory);
-    setInventory(updated);
-    setIsEditModalVisible(false);
-    setSelectedItem(null);
+    try {
+      await axios.put(`http://localhost:8084/api/inventory/${selectedItem.key}`, {
+        ...selectedItem,
+        quantity: selectedItem.quantity + values.quantity,
+      });
+      message.success('Item updated successfully.');
+      fetchInventory();
+      setIsEditModalVisible(false);
+      setSelectedItem(null);
+    } catch (error) {
+      message.error('Failed to update item.');
+    }
   };
 
-  const handleDeleteItem = (key) => {
-    const filtered = inventory.filter((i) => i.key !== key);
-    setInventory(filtered);
+  const handleDeleteItem = async (key) => {
+    console.log('Deleting item with key:', key); // Debugging
+    if (!key) {
+      message.error('Invalid item key.');
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:8084/api/inventory/${key}`);
+      message.success('Item deleted.');
+      fetchInventory();
+    } catch (error) {
+      message.error('Failed to delete item.');
+    }
   };
 
   const handleEdit = (record) => {
@@ -109,7 +132,7 @@ const FranchiseeDashboard = () => {
         return (
           <Row gutter={[16, 16]}>
             <Col md={8}><Card><Statistic title="Total Sales" value={35000} prefix="$" /></Card></Col>
-            <Col md={8}><Card><Statistic title="In Stock" value={inventory.filter(i => i.status === 'Available').length} valueStyle={{ color: '#1890ff' }} /></Card></Col>
+            <Col md={8}><Card><Statistic title="In Stock" value={inventory.filter(i => i.status === 'AVAILABLE').length} valueStyle={{ color: '#1890ff' }} /></Card></Col>
             <Col md={8}><Card><Statistic title="Out of Stock" value={inventory.filter(i => i.status === 'Out of Stock').length} valueStyle={{ color: '#cf1322' }} /></Card></Col>
           </Row>
         );
@@ -127,7 +150,6 @@ const FranchiseeDashboard = () => {
 
       case 'customer':
         const availableItems = inventory.filter(i => i.quantity > 0);
-
         const handleItemChange = (itemName) => {
           const item = availableItems.find(i => i.item === itemName);
           setSelectedOrderItem(item);
@@ -139,26 +161,38 @@ const FranchiseeDashboard = () => {
             <Form
               layout="vertical"
               form={orderForm}
-              onFinish={(values) => {
-                const { item, quantity } = values;
-                const updatedInventory = inventory.map((i) =>
-                  i.item === item
-                    ? { ...i, quantity: i.quantity - quantity }
-                    : i
-                );
+              onFinish={async (values) => {
+                console.log('Submitting order:', values);
 
-                const updated = updateInventoryStatus(updatedInventory);
-                setInventory(updated);
-                orderForm.resetFields();
-                setSelectedOrderItem(null);
-                console.log('Order Submitted:', values);
+                const { itemName, quantity } = values;
+                const orderItem = inventory.find(i => i.item === itemName);
+
+                if (!orderItem) {
+                  message.error('Selected item not found in inventory.');
+                  return;
+                }
+
+                const tempItem = { ...orderItem, quantity: orderItem.quantity - quantity,
+                  status: orderItem.quantity - quantity > 0 ? 'AVAILABLE' : 'UNAVAILABLE', 
+                 };
+                console.log('Updated item:', tempItem);
+                try {
+                  await axios.put(`http://localhost:8084/api/inventory/${orderItem.id}`, tempItem);
+                  await axios.post(`http://localhost:8084/api/orders`, values);
+                  message.success('Order submitted.');
+                  fetchInventory();
+                  orderForm.resetFields();
+                  setSelectedOrderItem(null);
+                } catch (error) {
+                  message.error('Failed to submit order.');
+                }
               }}
             >
               <Form.Item name="customerName" label="Customer Name">
                 <Input />
               </Form.Item>
 
-              <Form.Item name="item" label="Select Item">
+              <Form.Item name="itemName" label="Select Item">
                 <select style={{ width: '100%', padding: '8px' }} onChange={(e) => handleItemChange(e.target.value)}>
                   <option value="">-- Select an item --</option>
                   {availableItems.map((i) => (
@@ -196,8 +230,8 @@ const FranchiseeDashboard = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: status => {
-        const color = status === 'Available' ? 'green' : 'red';
+      render: (status) => {
+        const color = status === 'AVAILABLE' ? 'green' : 'red';
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -222,7 +256,7 @@ const FranchiseeDashboard = () => {
           <Menu.Item key="dashboard" icon={<AppstoreAddOutlined />}>Dashboard</Menu.Item>
           <Menu.Item key="inventory" icon={<DatabaseOutlined />}>Inventory</Menu.Item>
           <Menu.Item key="customer" icon={<UserOutlined />}>Customer</Menu.Item>
-          <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() => navigate('/')}>Logout</Menu.Item>
+          <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={() =>logoutFunction()}>Logout</Menu.Item>
         </Menu>
       </Sider>
 
@@ -236,6 +270,12 @@ const FranchiseeDashboard = () => {
         <Form layout="vertical" form={form} onFinish={handleAddNewItem}>
           <Form.Item name="item" label="Item Name" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="quantity" label="Quantity" rules={[{ required: true }]}><InputNumber min={1} style={{ width: '100%' }} /></Form.Item>
+          <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Please select the status!' }]}>
+            <Select placeholder="Select status">
+              <Select.Option value="AVAILABLE">AVAILABLE</Select.Option>
+              <Select.Option value="UNAVAILABLE">UNAVAILABLE</Select.Option>
+            </Select>
+          </Form.Item>
           <Form.Item><Button type="primary" htmlType="submit" block>Add Item</Button></Form.Item>
         </Form>
       </Modal>

@@ -25,23 +25,23 @@ const FranchisorDashboard = () => {
       title: "New Applications",
       description: "Check out pending applications from potential franchisees.",
       icon: <UserAddOutlined style={{ fontSize: "2rem", color: "#52c41a" }} />,
-      buttonText: "Review Now",
+      buttonText: "Add Application",
       route: "/applications",
     },
-    {
-      title: "Performance Reports",
-      description: "Analyze franchisee performance and business metrics.",
-      icon: <BarChartOutlined style={{ fontSize: "2rem", color: "#faad14" }} />,
-      buttonText: "View Reports",
-      route: "/reports",  // Link to the performance reports page
-    },
-    {
-      title: "Marketing Materials",
-      description: "Share updated marketing kits with your franchise network.",
-      icon: <FileTextOutlined style={{ fontSize: "2rem", color: "#722ed1" }} />,
-      buttonText: "Download",
-      route: "/materials",
-    },
+    // {
+    //   title: "Performance Reports",
+    //   description: "Analyze franchisee performance and business metrics.",
+    //   icon: <BarChartOutlined style={{ fontSize: "2rem", color: "#faad14" }} />,
+    //   buttonText: "View Reports",
+    //   route: "/reports",  // Link to the performance reports page
+    // },
+    // {
+    //   title: "Marketing Materials",
+    //   description: "Share updated marketing kits with your franchise network.",
+    //   icon: <FileTextOutlined style={{ fontSize: "2rem", color: "#722ed1" }} />,
+    //   buttonText: "Download",
+    //   route: "/materials",
+    // },
   ];
 
   return (

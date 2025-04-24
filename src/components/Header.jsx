@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import applogo from '../assets/AppLogo2.png';
 import { useNavigate } from 'react-router-dom';
 import { logoutStatus } from '../features/userSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import LocalStorageUtil from '../store/localStorageUtil';
 
 const Header = ({ identity }) => {
@@ -11,16 +11,17 @@ const Header = ({ identity }) => {
   console.log("identity", identity);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.user.info);
 
   const list0 = [
-    { name: 'Home', path: '/franchisor', icon: '🏠' },
+    { name: 'Dashboard', path: '/franchisor/dashboard', icon: '🏠' },
     { name: 'Add Franchisees', path: '/franchisor/add-franchisees', icon: '➕' },
-    { name: 'My Brands', path: '/franchisor/my-brands', icon: '➕' },
+    // { name: 'My Brands', path: '/franchisor/my-brands', icon: '➕' },
     { name: 'View Franchisees', path: '/franchisor/view-franchisees', icon: '👀' },
-    { name: 'Manage Franchisees', path: '/franchisor/manage-franchisees', icon: '🛠️' },
+    // { name: 'Manage Franchisees', path: '/franchisor/manage-franchisees', icon: '🛠️' },
     { name: 'My Profile', path: '/franchisor/profile', icon: '👤' },
-    { name: 'View Reports', path: '/franchisor/reports', icon: '📊' },
-    { name: 'Support', path: '/franchisor/support', icon: '🛎️' },
+    // { name: 'View Reports', path: '/franchisor/reports', icon: '📊' },
+    // { name: 'Support', path: '/franchisor/support', icon: '🛎️' },
     { name: 'Logout', path: '/logout', icon: '🚪' },
   ];
 
@@ -87,13 +88,15 @@ const Header = ({ identity }) => {
           >
             Login
           </button>
-        ) : (
+        ) : identity === '0' ? (
           <button
             className="bg-blue-300 hover:bg-blue-400 text-blue font-bold py-2 px-4 rounded-[100px] ml-2"
             onClick={() => setIsNavOpen(!isNavOpen)}
           >
-              <span className="text-2xl">☰</span> {/* Hamburger Icon */}
+            <span className="text-2xl">☰</span> {/* Hamburger Icon */}
           </button>
+        ) : (
+          <></>
         )}
       </div>
 
@@ -110,8 +113,8 @@ const Header = ({ identity }) => {
               U
             </div>
             <div>
-              <h2 className="text-lg font-bold">User Name</h2>
-              <p className="text-sm">user@example.com</p>
+              <h2 className="text-lg font-bold">{userInfo.username}</h2>
+              {/* <p className="text-sm">user@example.com</p> */}
             </div>
           </div>
         </div>
@@ -130,7 +133,7 @@ const Header = ({ identity }) => {
           </ul>
 
         </nav>
-        
+
       </div>
     </header>
   );

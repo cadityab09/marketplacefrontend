@@ -29,19 +29,19 @@ function MainLayout() {
     const identity = useSelector((state) => state.user.info.identity);
 
     useEffect(() => {
-        // postAccessToken().then(res=>{
-        //     const response = res;
-        //     console.log("JTW response=>", response)
-        //     dispatch(loginStatus(response))
-        //     if(response.identity === "0"){
-        //         navigate("/FranchisorDashboard")
-        //     }else if(response.identity === "1"){
-        //         navigate("/Franchiseedashboard")
-        //     }
-        // }).catch(err=>{
-        //     console.log("Err:", err)
-        //     dispatch(logoutStatus())
-        // })
+        postAccessToken().then(res=>{
+            const response = res;
+            console.log("JTW response=>", response)
+            dispatch(loginStatus(response))
+            // if(response.identity === "0"){
+            //     navigate("/*")
+            // }else if(response.identity === "1"){
+            //     navigate("/*")
+            // }
+        }).catch(err=>{
+            console.log("Err:", err)
+            dispatch(logoutStatus())
+        })
     }, [dispatch]);
 
     return (
