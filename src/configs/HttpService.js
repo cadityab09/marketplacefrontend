@@ -1,7 +1,7 @@
 import axios from "axios";
 import LocalStorageUtil from "../store/localStorageUtil"
 import Constant from "../store/constant";
-const baseUrl = "http://192.168.112.163:8084";
+const baseUrl = "http://localhost:8084";
 const httpService = axios.create({
     baseURL: baseUrl,
     timeout: 40000,

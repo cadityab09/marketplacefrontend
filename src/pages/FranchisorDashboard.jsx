@@ -7,11 +7,14 @@ import {
   BarChartOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
+import { useSelector } from "react-redux";
 
 const { Title, Paragraph } = Typography;
 
 const FranchisorDashboard = () => {
   const navigate = useNavigate();
+    const userInfo = useSelector((state) => state.user.info);
+
 
   const dashboardCards = [
     {
@@ -49,7 +52,7 @@ const FranchisorDashboard = () => {
       <div className="max-w-7xl mx-auto">
         {/* Welcome Card */}
         <Card className="mb-6 shadow-lg rounded-lg">
-          <Title level={2}>Welcome, Franchisor Krushna 👋</Title>
+          <Title level={2}>Welcome, Franchisor {userInfo.username} 👋</Title>
           <Paragraph>
             Here's your dashboard overview. You can manage franchisees, view applications, monitor performance reports, and more.
           </Paragraph>

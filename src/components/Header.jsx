@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import applogo from '../assets/AppLogo2.png';
+import applogo from '../assets/FRANXPRESS.png';
 import { useNavigate } from 'react-router-dom';
 import { logoutStatus } from '../features/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -76,8 +76,8 @@ const Header = ({ identity }) => {
       <div className="flex items-center">
         <img src={applogo} alt="App Logo" className="w-10 h-10 object-cover object-center" />
         <div className="p-2 px-4">
-          <h1 className="text-3xl font-bold text-blue-600">Marketplace</h1>
-          <p className="text-lg text-blue-600">Connecting Franchisees and Franchisors</p>
+          <h1 className="text-3xl font-bold text-blue-600">FRANXPRESS</h1>
+          <p className="text-lg text-blue-600">Think Smart. Scale Smarter</p>
         </div>
       </div>
       <div className="ml-auto mr-4">
